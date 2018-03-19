@@ -6,7 +6,7 @@ import { AngularFireAuthModule} from 'angularfire2/auth';
 import { environment } from './../environments/environment';
 import { RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-
+import { UserService } from './user.service';
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { HomeComponent } from './home/home.component';
@@ -19,6 +19,8 @@ import { AdminProductsComponent } from './admin/admin-products/admin-products.co
 import { AdminOrdersComponent } from './admin/admin-orders/admin-orders.component';
 import { LoginComponent } from './login/login.component';
 import { AuthService } from './auth.service';
+import { AuthGuardService } from './auth-guard.service';
+import { AdminAuthGuardService } from './admin-auth-guard.service';
 @NgModule({
   declarations: [
     AppComponent,
@@ -44,17 +46,23 @@ import { AuthService } from './auth.service';
     	{ path: '', component:HomeComponent},
     	{ path: 'products', component:ProductsComponent},
     	{ path: 'shopping-cart', component:ShoppingCartComponent},
-    	{ path: 'check-out', component:CheckOutComponent},
-    	{ path: 'order-success', component:OrderSuccessComponent},
-    	{ path: 'login', component:LoginComponent},
-    	{ path: 'admin/products', component:AdminProductsComponent},
-    	{ path: 'admin/orders', component:AdminOrdersComponent},
-    	{ path: 'my/orders', component:MyOrderComponent}
+      { path: 'login', component:LoginComponent},
+
+    	{ path: 'check-out', component:CheckOutComponent, canActivate: [AuthGuardService]},
+    	{ path: 'order-success', component:OrderSuccessComponent, canActivate: [AuthGuardService]},
+    	{ path: 'my/orders', component:MyOrderComponent, canActivate: [AuthGuardService]},
+
+    	{ path: 'admin/products', component:AdminProductsComponent, canActivate: [AuthGuardService, AdminAuthGuardService]},
+    	{ path: 'admin/orders', component:AdminOrdersComponent, canActivate: [AuthGuardService, AdminAuthGuardService]}
+    
     	])
     
   ],
   providers: [
-      AuthService
+      AuthService,
+      AuthGuardService,
+      AdminAuthGuardService,
+      UserService
   ],
   bootstrap: [AppComponent]
 })
